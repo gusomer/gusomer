@@ -1,0 +1,412 @@
+
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Horse Racing</title>
+
+<style>
+
+p		{background-color: #CCC; font-family: "Comic Sans MS", cursive;}
+#strt	{
+	position: absolute;
+	top: 17px;
+	left: 155px;
+	color: #666;
+	background-color:#CCC;
+	font-weight: bold;
+	font-style: italic;
+	width: 60px;
+}
+
+#query	{
+	position: absolute;
+	top: 18px;
+	left: 320px;
+	color: #FF0;
+	background-color: #09C;
+	font-weight: bold;
+	font-style: italic;
+	width: 66px;
+}
+#saveRace	{position:fixed; top:18px;  left:200px; color:#FF0; background-color: #69F; font-weight:bold; font-style:italic; display:none; }
+
+img 	{display:block;   }
+.horserun	{ src:url(animated_horseD.gif);}
+#finishLine	{ position:absolute; left:1340px; top:10px; width:1px; background-color:#309; z-index:1000; height:1000px;}
+
+#cage	{
+	position: absolute;
+	left: 20px;
+	top: 36px;
+	width: 100px;
+	background-color: #660;
+	z-index: 1000;
+	height: 1000px;
+	opacity:.9;
+	transition: opacity .5s ease-in-out;
+}
+
+#cage:hover {opacity:.5;}
+div			{}
+.race	{display:none;}
+#raceSize	{
+	position: absolute;
+	left: 977px;
+	top: 20px;
+	width: 46px;
+}
+#q1		{position:absolute; left:338px; top:1px; background-color:#FF3;  font-family: "Comic Sans MS", cursive;}
+#q2		{position:absolute; left:675px; top:1px; background-color:#F90; font-family: "Comic Sans MS", cursive;}
+#q3		{position:absolute; left:1013px; top:1px; background-color:#F00;font-family: "Comic Sans MS", cursive;}
+#q4		{position:absolute; left:1290px; top:1px; background-color: #6C0;font-family: "Comic Sans MS", cursive;}
+#l1		{position:absolute; left:338px; top:25px; height:900px; width:1px; background-color: #CCC;}
+#l2		{position:absolute; left:675px; top:25px; height:900px; width:1px; background-color: #CCC;}
+#l3		{position:absolute; left:1013px; top:25px; height:900px; width:1px; background-color: #CCC;}
+
+
+#turnitoff	{position:absolute; left:1190px; font-size:.7em;  top:16px; font-family: "Comic Sans MS", cursive;}
+#winner	{position:fixed; left:500px; top:200px; color: #FF0; margin:20px;  background-color:#F00; height:75px; font-size:24px;}
+#upperSection	{
+	background-image: url(woodgrain4.jpg);
+	color: #FC0; height:30px;
+	background-repeat: repeat; font-family:"Lucida Sans Unicode", "Lucida Grande", sans-serif;
+}
+#raceReport	{
+	position: absolute;
+	top: 19px;
+	left: 681px;
+	background-color: #FF0;
+	color: #06C;
+}
+
+#theWinner	{position:fixed; top:18px;  left:520px; background-color: #9C0; width:auto }
+#finalWinner {position:fixed; left:520px; top:0px; font-size:.8em; font-family: Tahoma, Geneva, sans-serif;}
+#racespeed{position:fixed; top:18px;  left:800px; background-color:#9C0;}
+#final_time	{position:fixed; left:800px; top:0px;font-size:.8em; font-family: Tahoma, Geneva, sans-serif;}
+
+#myquery	{display:none; position:fixed; left:300px; top:200px; background-color:#6CF;} 
+#mytext		{background-color:#3FF;}
+#Size		{position:absolute; left:400px; top:18px;}
+#pagree	{
+	position: absolute;
+	left: 221px;
+	top: 3px;
+}
+
+</style>
+</head>  
+
+<audio preload="auto" src="Trumpet fanfare sound effect (music bite).mp3" id="trumpet" type="audio/wav" ></audio>
+<audio preload="auto"  src="HorseSound.mp3" id="horsesound" type="audio/wav" loop></audio>
+<body>
+
+<p  id="upperSection">Racing</p>
+<p id="pagree" title="Hit check box to change ready to Start button"><input id="agree" type="checkbox"  />I agree</p>
+<input type="hidden" id="Race_date">
+<input type="button" value="Ready" id="strt"  disabled = 'disabled'/>
+<button  id="query"  title="press this to have manual query report">Qeury</button>
+
+<form id="form-id"  action="horserace2.php" method="post">
+<label id="finalWinner">Winning Horse<input name="winner" type="text" id="theWinner" value=""></label>
+<label id="final_time">Race Time<input name="Race_Time"type="text" id="racespeed" value=""></label>
+<input  type="hidden" name="Race_Date" id="Race_Date">
+<input  id="saveRace" name="Save" type="submit" value="Save">
+</form>
+
+<input name="race_size" type="text" id="raceSize" style="background-color:#F00" title="Choose a number between 1 amd 100" max="100">
+
+<div id="myquery">
+<form action="horserace2pdf.php" method="post">
+<textarea   title="tabel name is winninghorse, columns are Horse_No, Race_Date, Race_No, Race_Time"id="mytext" name="myquery" cols="50" rows="5"></textarea>
+<input  id="oldRace" name="look" type="submit" value="lookup records">
+</form>
+</div>
+
+<div>
+ <a id="raceReport"  href="horserace2pdf.php" title="Generate report of races or press query button to custom query report">View Report</a>
+
+<p id="winner"></p>
+<p id="cage"></p>
+<p id="q1" class="race">1st Quarter Mark</p>
+<p id="q2" class="race">Half Mark</p>
+<p id="q3" class="race">3rd Quarter Mark</p>
+<p id="q4" class="race">Finish</p>
+<p id="finishLine"></p>
+<input id="turnitoff" name="sound" type="button" value="Sound" title="Press to disable sound"> <!--to turn off the sound -->
+<p id="l1"></p>
+<p id="l2"></p>
+<p id="l3"></p>
+</div>
+
+<div id="horse">
+<img id="Horse no 1" src="animated_horseL.gif" title="1"/><!--make one horse to start with, then add more-->
+</div>
+
+
+
+<script src="js/jquery-1.11.1.min.js"></script>
+
+<script>
+//using js here
+function opencage(){
+	var elem = document.getElementById('cage');
+	//elem.style.transition ="width 1s ease-out";
+	elem.style.backgroundColor = '#060';
+	//elem.style.width = "10px";
+	elem.style.transition ="left 3s ease-out";
+	elem.style.left = "-90px";
+}
+</script>
+
+<script>
+  //mix of js and jQuery
+	$(document).ready(function(e) {
+	$('img').attr('src','horsestart.gif');  //initial static gif image of horses
+	
+	horseSound = document.getElementById('horsesound')
+	trump = document.getElementById('trumpet')
+	var fin = parseInt($('#finishLine').css('left')) + 10;
+	
+	var colors = ['animated_horseL.gif', 'animated_horseD.gif','animated_horse.gif'];  //array of available colors
+	 $('#theWinner').val("");	//clear content
+	 $('#racespeed').val("");	//clear content
+	 $('#raceSize').val("");	//clear content
+	
+		 
+		$('#turnitoff').click(function(){	//pause sound 
+			 trump.pause();
+		 	 horseSound.pause();
+ 	  	});
+		  
+	  $('#saveRace').click(function(){
+	  location.reload(true);	//  saveRace is a submit button run the php to store in table and reload again
+	  });
+	
+	 $('#upperSection').click(function(){
+	  location.reload(true);	//  reload again
+	  });
+	 
+	 
+	 $('#strt').click(function(){	//start main event
+		
+		$(this).attr('disabled', 'disabled').css('background-color', '#CCC').attr('value','');
+		$('#agree').removeAttr('checked');
+		 $('#q4').show();  //show finish line
+		 $('img').css('margin-left','0px'); // single css change example
+		 trump.play();
+
+		 var endit = setTimeout(function(){
+	
+		horseSound.play();
+	//$('#cage').css('opacity','0');
+//	$('#cage').hide(1000);
+
+	
+		$('img').each(function(index, element) {	//go thru each of the race horses
+			var horseCol = Math.floor(Math.random() * 3 ) ; //random no between 0,1,2  *** Do NOT change this ***
+	            $(this).attr('src',colors[horseCol]);	//change the source of each horse randomely from what is available from array horseCol
+        });
+			
+			delaydoor = setTimeout(opencage(), 500); //wait 500ms then open cage
+			
+	var startRaceTime = findTime();		//store when race started
+	var shoot = setInterval(function () {
+	
+	
+	var howmany = $('#raceSize').val(); //store how many horses in a variable 		
+	var horseNo = Math.floor(Math.random() * howmany) ;
+	
+	
+	var Sz = $('#raceSize').val();
+	var accelerator;
+	
+		if (Sz <=10){
+			accelerator = .5;
+		} else if(Sz>10 && Sz<=30) {
+			accelerator = 1;
+		} else if(Sz>30 && Sz<=50) {
+			accelerator = 1.5; 
+		} else if(Sz>50 && Sz<=70) {
+			accelerator = 2;                                                                   
+		} else if(Sz>70 && Sz<=100) {
+			accelerator = 3;
+		}
+		 
+		var horseAccel = Math.floor(Math.random() * 3 +parseInt(accelerator)) ;		// accelerator how fast a horse can accelerate the + is extra boost
+		
+//	$('#picture1').attr('src','animated_horse.gif');  //change an image source
+	var horsePos = parseInt($('img').eq(horseNo).css('margin-left'));
+	
+	var Incr = '+='+horseAccel+'px';
+	
+	if (horsePos +129>= fin * .25){		//calculate 1/4 track to add some speed 
+		
+		$('#q1').show(500);
+	//	alert($('img').eq(horseNo).attr('id'));
+	//	$('#q1').text('Quearter Mark: horse no ' + $('img').eq(horseNo).attr('id') +' in first position')
+	//	$('#q1').unbind('text');
+	var faster = parseInt(horseAccel)+1.25 ;	//speed increased by addional 1.25 after 1st quarter 
+	
+	Incr = '+='+faster+'px';
+	}
+	
+	
+	if (horsePos +129 >= fin * .5){	//1/2 race track
+				$('#q2').show(500);
+	var faster = parseInt(horseAccel)+1;		//1
+//	alert(horsePos);
+	Incr = '+='+faster+'px';
+	};
+	
+	
+	if (horsePos +129>= fin * .75){	//3/4 race track
+			$('#q3').show(500);
+	var faster = parseInt(horseAccel)+1.5 ;	1.5	//
+	//alert(horsePos);	
+	Incr = '+='+faster+'px';
+	};
+	
+	
+	$('img').eq(horseNo).css({'margin-left':Incr }	//the part that make each horse move by increment
+	);
+	
+	    var whichhorse = parseInt($('img').eq(horseNo).css('margin-left'));
+		winnerhorse = $('img').eq(horseNo).attr('title');
+		//alert(winnerhorse);	
+			
+		if (whichhorse + (parseInt($('img').eq(horseNo).css('width')))  >= fin){ //how far is the winning horse is from finish line
+		//	alert(parseInt($('img').eq(horseNo).css('width')));
+			
+			clearInterval (shoot);	//STOP THE RACE
+			var endRaceTime = findTime();	//capture when race stopped
+			$('#racespeed').val(parseInt(endRaceTime - startRaceTime)); //calculate race time
+			var myRaceDate = dateTime()
+			//alert (myRaceDate);
+			$('#Race_Date').val(myRaceDate);
+			horseSound.pause();
+		$('img').attr('src','horseend.gif');	//change all images to static again
+		
+		
+	//	alert('horse no ' + winnerhorse +' is the winner');	//announce the winner
+		$('#winner').delay(1000).text('*** Horse No ' + winnerhorse +' is the winner ...' + 'Congratulation to ' + winnerhorse + " ***").delay(2000).hide(1000);
+		$('#q1,#q2,#q3').hide(1000); //hide these after race is over
+		$('#saveRace').show(1000); //manual save of results
+		
+		var elem = document.getElementById('upperSection')
+		elem.innerHTML ='Race Again';
+		elem.style.color = 'yellow';
+		
+		
+	//	alert('started: '+startRaceTime + ' Ended: '+ endRaceTime);
+	//	alert("race time: " + (endRaceTime - startRaceTime) + " seconds");
+		
+		
+		$('#theWinner').val(winnerhorse);
+		
+//		saveit = setTimeout(function(){
+//	$("#form-id").submit();}, 8000);	//automatic form submitt with timeout of 8 sec
+		
+	
+	
+		}	//end if
+						
+		}, 1); //end setInterval  this is the race speed
+	
+		}, 8000);		//wait 8 seconds before all above to start
+	
+		/*	var endit = setTimeout(function(){
+	clearInterval (shoot)}, 60000); */
+       
+			  });	//end click
+    }); //end ready
+	
+//********************************************************************	
+ function findTime() {
+      var today = new Date();
+    //  var h = today.getHours();
+	  var h = today.getHours();
+      var m = today.getMinutes();
+      var s = today.getSeconds();
+	 
+	  
+	  return ((h*60*60)+(m*60) + s);	//return time "NOW" in seconds
+ }
+//*********************************************************************
+function dateTime(){
+	var today = new Date();
+	 var yr = today.getFullYear();
+   	 var mo = today.getMonth()  
+	 	 mo = mo + 1  //because jan is 0
+	  var dy = today.getDate();
+	  var tm = today.getHours()+":"+ today.getMinutes()+":"+ today.getSeconds()
+	  
+	  return( yr +"-"+ mo+"-"+dy + " " + tm);   //return today's date
+	  
+}
+
+
+
+</script>
+
+<script>
+	$('#query').click(function()	//show or hide the part that you can query a report
+	{
+		$('#myquery').toggle(500);
+	})
+</script>
+
+
+<script>
+	$('#raceSize').change(function(){	//making a user choose how many horses in a race
+		if ($(this).val()>100){
+	
+			alert('must be less than 100');
+			$(this).val("");
+			} else{
+		var howMany = parseInt($(this).val());
+		for(var i=2; i<=(howMany); i++){	//loop for to generate the required horses start with 2 because there is already horse #1 in race
+		var tempID = "Horse No " + i
+		var tempTitle = i;
+		//	alert(tempID);
+			
+		$('#horse').append("<img id= '"+tempID+"' src='horsestart.gif'  title= '"+tempTitle+"' />") //add the newly genarated horses to the DOM
+		}
+	
+	
+	var count = $('img').length;
+	//alert(count);
+	
+	$(this).unbind(change); //disable change 
+	$(this).hide(500);
+	}
+	
+	})
+
+</script>
+
+
+<script>
+$(document).ready(function() {
+	$('#agree').removeAttr('checked');  
+    $('#agree').change(function(){
+	//$('#raceSize').show(500);
+	$('#raceSize').slideToggle(500);
+	if($(this).is(":checked")) {
+		//alert('checked');
+		$('#strt').removeAttr('disabled');	//it was disabled now enable it
+		$('#strt').attr('value', 'Start').css('background-color', 'red')
+		.css('color','black'); //could be done as multiple as well
+    
+} else {
+ 	//$('#raceSize').hide();
+	//alert('not checked');
+	$('#strt').attr('disabled', 'disabled');
+	$('#strt').attr('value', 'Ready').css({'background-color':'#CCC','color':'#666'}); //multiple css changes
+		
+}
+		});
+});
+</script>
+</body>
+</html>
